@@ -18,7 +18,7 @@ def readexcel():
     folder = os.path.abspath(filename)
     df = pd.read_excel(filename)
     print(filename)
-    lbl1.configure(text="전표 파일 (행, 열) : " + str(df.shape))
+    lbl1.configure(text="Journal entry file (row, column) : " + str(df.shape))
 
 
 
@@ -35,14 +35,14 @@ def A1_1():
     before = df['date'] < pd.to_datetime(start)
     after = df['date'] > pd.to_datetime(end)
     out = df[before | after]
-    lbl2.configure(text="회계기간 외 행 갯수 : " + str(out.shape[0]))
+    lbl2.configure(text="out of FY line EA : " + str(out.shape[0]))
 
 
 def A1_2():
     nullcol = str(e5.get())
     nulltemp = df[nullcol].isnull()
     nullrow = df.loc[(nulltemp)]
-    lbl3.configure(text="결측값 갯수 : " + str(nullrow.shape[0]))
+    lbl3.configure(text="NA number : " + str(nullrow.shape[0]))
 
 
 # %% A2 account differ
@@ -52,10 +52,10 @@ def A2():
     dae = df.pivot_table(values=["CR"], index=["JENO"], aggfunc='sum', margins=True)
     test = pd.concat([cha, dae], axis=1)
     test['difference'] = test["DR"] - test["CR"]
-    # difference 열 groupby
+    # difference Row groupby
     test.to_excel(folder + 'A2test.xlsx')
     A2_test = test.groupby("difference").count()
-    lbl4.configure(text="금액 차이 갯수 : " + str(A2_test.shape[0] - 1))
+    lbl4.configure(text="Amount diff. EA : " + str(A2_test.shape[0] - 1))
 
 
 # %% A3
@@ -95,8 +95,7 @@ def A3():
     acc2.to_excel(folder + 'A3test.xlsx')
 
     A3_test = acc2.groupby("A3").count()
-    lbl5.configure(text="전표 시산표 차이 갯수: " + str(A3_test.shape[0] - 1))
-
+    lbl5.configure(text="JE TB diff. EA : " + str(A3_test.shape[0] - 1))
 
 # %% B1 corr
 
@@ -117,23 +116,23 @@ def B1():
 
     accodegb.to_excel(folder + 'B1test.xlsx')
 
-    lbl6.configure(text="상대계정 갯수: " + str(accodegb.shape[0] - 1))
+    lbl6.configure(text="Corr Acc EA : " + str(accodegb.shape[0] - 1))
 
 
 win =Tk()
 win.geometry("500x500")
 win.title("JE Tester by Joy 0.1.0, Copyright 2021. Joy. All rights reserved ")
-win.option_add("*Font","맑은고딕 16")
+win.option_add("*Font","NanumGothic 16")
 
 
-l0 = Label(win, text = "입력")
+l0 = Label(win, text = "Input")
 
 b0 = Button(win, text = "File Upload",command=readexcel)
-l2 = Label(win, text = "시작일자")
-l3 = Label(win, text = "종료일자")
-l4 = Label(win, text = "날짜형식")
-l5 = Label(win, text = "결측확인열")
-l6 = Label(win, text = "본계정코드")
+l2 = Label(win, text = "Beg date")
+l3 = Label(win, text = "End date")
+l4 = Label(win, text = "Date Set")
+l5 = Label(win, text = "NA Row")
+l6 = Label(win, text = "Acc Code")
 
 l0.grid(row=5, column=1)
 
@@ -147,7 +146,7 @@ l6.grid(row=11, column=0, sticky = W, padx =10)
 
 
 
-lbl0 = Label(win, text ="파일 읽기 (행, 열) : ? ")
+lbl0 = Label(win, text ="JE file (Row, Col) : ? ")
 lbl0.grid(row=6, column=1, sticky = W,  pady = 20)
 e2=Entry(win)
 e3=Entry(win)
@@ -181,19 +180,19 @@ b5.grid(row=26,column =0)
 
 
 
-lbl2 = Label(win, text ="회계기간 외 행 갯수 : ? ")
+lbl2 = Label(win, text ="Out of FY Row EA : ? ")
 lbl2.grid(row=22, column=1, sticky = W)
 
-lbl3 = Label(win, text ="결측값 갯수 : ? ")
+lbl3 = Label(win, text ="NA EA : ? ")
 lbl3.grid(row=23, column=1, sticky = W)
 
-lbl4 = Label(win, text ="금액 차이 갯수 : ? ")
+lbl4 = Label(win, text ="Amount Diff. EA : ? ")
 lbl4.grid(row=24, column=1, sticky = W)
 
-lbl5 = Label(win, text ="전표 시산표 차이 갯수: ? ")
+lbl5 = Label(win, text ="Je TB Diff. EA : ? ")
 lbl5.grid(row=25, column=1, sticky = W)
 
-lbl6 = Label(win, text ="상대계정 갯수 : ? ")
+lbl6 = Label(win, text ="Corr EA : ? ")
 lbl6.grid(row=26, column=1, sticky = W)
 
 
