@@ -116,100 +116,117 @@ def B1():
 
 
 win =Tk()
-win.geometry("1000x800")
+win.geometry("1000x550")
 win.title("JE Tester by Joy 0.1.0, Copyright 2021. Joy. All rights reserved ")
 win.option_add("*Font","NanumGothic 16")
 
-frame_file = Frame(win, relief = solid, bd = 1)
-frame_file.pack()
+# Title
 
-b0 = Button(win, text = "JE File Upload",command=readexcel)
-b0.grid(row=0, column=0, sticky = N+E+W+S, padx =10)
+Label(win, text = "Journal Entry Test Tool").pack(side = "top")
 
-sel_lab1 = Label(win, text = "Select ACCT Code")
-sel_lab1.grid(row=1, column=0, sticky = W, padx =10)
+
+# Frame
+
+frame_file = Frame(win, relief = "solid", bd = 1)
+frame_file.pack(fill = "both", expand = True)
+
+lbl_file = Label(frame_file, text ="File Settings : ")
+lbl_file.grid(row=0, column=0, sticky = W)
+
+frame_test = Frame(win, relief = "solid", bd = 1)
+frame_test.pack(fill = "both", expand = True)
+
+lbl_test = Label(frame_test, text ="Test Section : ")
+lbl_test.grid(row=10, column=0, sticky = W)
+
+
+b0 = Button(frame_file, text = "JE File Upload",command=readexcel)
+b0.grid(row=1, column=0, sticky = N+E+W+S, padx =10)
+
+sel_lab1 = Label(frame_file, text = "Select ACCT Code")
+sel_lab1.grid(row=2, column=0, sticky = W, padx =10)
 ACCT = [str(i) for i in range(1,32)]
-combobox1 = ttk.Combobox(win,height =5, state="readonly", values = ACCT)
-combobox1.grid(row = 1, column = 1)
+combobox1 = ttk.Combobox(frame_file,height =5, state="readonly", values = ACCT)
+combobox1.grid(row = 2, column = 1)
 combobox1.set("Select ACCT Code")
 
-sel_lab2 = Label(win, text = "Select JE No.")
-sel_lab2.grid(row=2, column=0, sticky = W, padx =10)
-JENO = [str(i) for i in range(1,32)]
-combobox2 = ttk.Combobox(win,height =5, state="readonly", values = JENO)
-combobox2.grid(row = 2, column = 1)
-combobox2.set("Select JE No.")
-
-sel_lab3 = Label(win, text = "Select JE Date")
-sel_lab3.grid(row=3, column=0, sticky = W, padx =10)
-JEDATE = [str(i) for i in range(1,32)]
-combobox3 = ttk.Combobox(win,height =5, state="readonly", values = JEDATE)
-combobox3.grid(row = 3, column = 1)
-combobox3.set("Select JE Date")
-
-sel_lab4 = Label(win, text = "Select Debit Record")
-sel_lab4.grid(row=4, column=0, sticky = W, padx =10)
+sel_lab2 = Label(frame_file, text = "Select Debit Record")
+sel_lab2.grid(row=3, column=0, sticky = W, padx =10)
 DR = [str(i) for i in range(1,32)]
-combobox4 = ttk.Combobox(win,height =5, state="readonly", values = DR)
-combobox4.grid(row = 4, column = 1)
-combobox4.set("Select DR")
+combobox2 = ttk.Combobox(frame_file,height =5, state="readonly", values = DR)
+combobox2.grid(row = 3, column = 1)
+combobox2.set("Select DR")
 
-sel_lab5 = Label(win, text = "Select Credit Record")
-sel_lab5.grid(row=5, column=0, sticky = W, padx =10)
+sel_lab3 = Label(frame_file, text = "Select Credit Record")
+sel_lab3.grid(row=4, column=0, sticky = W, padx =10)
 CR = [str(i) for i in range(1,32)]
-combobox5 = ttk.Combobox(win,height =5, state="readonly", values = CR)
-combobox5.grid(row = 5, column = 1)
-combobox5.set("Select CR")
+combobox3 = ttk.Combobox(frame_file,height =5, state="readonly", values = CR)
+combobox3.grid(row = 4, column = 1)
+combobox3.set("Select CR")
 
 
+sel_lab4 = Label(frame_file, text = "Select JE No.")
+sel_lab4.grid(row=5, column=0, sticky = W, padx =10)
+JENO = [str(i) for i in range(1,32)]
+combobox4 = ttk.Combobox(frame_file,height =5, state="readonly", values = JENO)
+combobox4.grid(row = 5, column = 1)
+combobox4.set("Select JE No.")
 
-b6 = Button(win, text = "TB(CY) File Upload",command=readexcel)  # command attach
-b6.grid(row=0, column=3, sticky = N+E+W+S, padx =10)
+sel_lab5 = Label(frame_file, text = "Select JE Date")
+sel_lab5.grid(row=6, column=0, sticky = W, padx =10)
+JEDATE = [str(i) for i in range(1,32)]
+combobox5 = ttk.Combobox(frame_file,height =5, state="readonly", values = JEDATE)
+combobox5.grid(row = 6, column = 1)
+combobox5.set("Select JE Date")
+
+
+b6 = Button(frame_file, text = "TB(CY) File Upload",command=readexcel)  # command attach
+b6.grid(row=1, column=3, sticky = N+E+W+S, padx =10)
 
 ACCT_CYTB = [str(i) for i in range(1,32)]
-combobox7 = ttk.Combobox(win,height =5, state="readonly", values = ACCT_CYTB)
-combobox7.grid(row = 1, column = 3)
+combobox7 = ttk.Combobox(frame_file,height =5, state="readonly", values = ACCT_CYTB)
+combobox7.grid(row = 2, column = 3)
 combobox7.set("Select ACCT Code")
 
 ACCT_DRSUM = [str(i) for i in range(1,32)]
-combobox8 = ttk.Combobox(win,height =5, state="readonly", values = ACCT_DRSUM)
-combobox8.grid(row = 2, column = 3)
+combobox8 = ttk.Combobox(frame_file,height =5, state="readonly", values = ACCT_DRSUM)
+combobox8.grid(row = 3, column = 3)
 combobox8.set("Select DR")
 
 ACCT_CRSUM = [str(i) for i in range(1,32)]
-combobox9 = ttk.Combobox(win,height =5, state="readonly", values = ACCT_CRSUM)
-combobox9.grid(row = 3, column = 3)
+combobox9 = ttk.Combobox(frame_file,height =5, state="readonly", values = ACCT_CRSUM)
+combobox9.grid(row = 4, column = 3)
 combobox9.set("Select CR")
 
-b7 = Button(win, text = "TB(PY) File Upload",command=readexcel) # command attach
-b7.grid(row=0, column=4, sticky = N+E+W+S, padx =10)
+b7 = Button(frame_file, text = "TB(PY) File Upload",command=readexcel) # command attach
+b7.grid(row=1, column=4, sticky = N+E+W+S, padx =10)
 
 ACCT_PYTB = [str(i) for i in range(1,32)]
-combobox11 = ttk.Combobox(win,height =5, state="readonly", values = ACCT_PYTB)
-combobox11.grid(row = 1, column = 4)
+combobox11 = ttk.Combobox(frame_file,height =5, state="readonly", values = ACCT_PYTB)
+combobox11.grid(row = 2, column = 4)
 combobox11.set("Select ACCT Code")
 
 ACCT_DRSUM_PY = [str(i) for i in range(1,32)]
-combobox12 = ttk.Combobox(win,height =5, state="readonly", values = ACCT_DRSUM_PY)
-combobox12.grid(row = 2, column = 4)
+combobox12 = ttk.Combobox(frame_file,height =5, state="readonly", values = ACCT_DRSUM_PY)
+combobox12.grid(row = 3, column = 4)
 combobox12.set("Select DR")
 
 ACCT_CRSUM_PY = [str(i) for i in range(1,32)]
-combobox13 = ttk.Combobox(win,height =5, state="readonly", values = ACCT_CRSUM_PY)
-combobox13.grid(row = 3, column = 4)
+combobox13 = ttk.Combobox(frame_file,height =5, state="readonly", values = ACCT_CRSUM_PY)
+combobox13.grid(row = 4, column = 4)
 combobox13.set("Select CR")
 
 
 
 
+l2 = Label(frame_file, text = "Date Format")
+l3 = Label(frame_file, text = "Beg date")
+l4 = Label(frame_file, text = "End date")
+l5 = Label(frame_file, text = "Column for NA Lines")
+l6 = Label(frame_file, text = "Account Code for B01")
 
-l2 = Label(win, text = "Beg date")
-l3 = Label(win, text = "End date")
-l4 = Label(win, text = "Date Format")
-l5 = Label(win, text = "Column for NA Lines")
-l6 = Label(win, text = "Account Code for B01")
+l2.grid(row=11, column=0, sticky = W, padx =10)
 
-l2.grid(row=11, column=0, sticky = E, padx =10)
 l3.grid(row=12, column=0, sticky = E, padx =10)
 l4.grid(row=13, column=0, sticky = E, padx =10)
 l5.grid(row=14, column=0, sticky = E, padx =10)
@@ -217,71 +234,67 @@ l6.grid(row=15, column=0, sticky = E, padx =10)
 
 
 
-lbl0 = Label(win, text ="JE file (Row, Col) : ? ")
-lbl0.grid(row=0, column=1, sticky = N+E+W+S,  pady = 20)
-e2=Entry(win)
-e3=Entry(win)
+lbl0 = Label(frame_file, text ="JE file (Row, Col) : ? ")
+lbl0.grid(row=1, column=1, sticky = N+E+W+S,  pady = 20)
 
 
-e2.grid(row=11, column =1)
-e2.insert(0, "2017-01-01")
-e3.grid(row=12, column =1)
-e3.insert(0, "2017-12-31")
-
-# e4 replace to combobox
 Date_Format = {'20211231' : '%Y%m%d','2021-12-31': '%Y-%m-%d','2021/12/31': '%Y/%m/%d','12/31/2021':'%m/%d/%Y'}
-combobox13 = ttk.Combobox(win,height =5, state="readonly", values = list(Date_Format.keys()))
-combobox13.grid(row = 13, column = 1)
-combobox13.set("Select Date Format")
+combobox11 = ttk.Combobox(frame_file,height =5, state="readonly", values = list(Date_Format.keys()))
+combobox11.grid(row = 11, column = 1)
+combobox11.set("Select Date Format")
+
+e3=Entry(frame_file)
+e4=Entry(frame_file)
+
+e3.grid(row=12, column =1)
+e3.insert(0, "2017-01-01")
+e4.grid(row=13, column =1)
+e4.insert(0, "2017-12-31")
 
 # e5 replace to combobox
 NA_lines =  [str(i) for i in range(1,32)]
-combobox14 = ttk.Combobox(win,height =5, state="readonly", values = NA_lines)
+combobox14 = ttk.Combobox(frame_file,height =5, state="readonly", values = NA_lines)
 combobox14.grid(row = 14, column = 1)
-combobox14.set("Select column for NA")
+combobox14.set("Column for A01(2)")
 
 
 # e6 replace to combobox
 ACCT_B01 =  [str(i) for i in range(1,32)]
-combobox15 = ttk.Combobox(win,height =5, state="readonly", values = ACCT_B01)
+combobox15 = ttk.Combobox(frame_file,height =5, state="readonly", values = ACCT_B01)
 combobox15.grid(row = 15, column = 1)
-combobox15.set("Select column for B01")
+combobox15.set("Column for B01")
 
 
 
-b22 = Button(win, text = "A01(1)", command=A1_1)
-b23 = Button(win, text = "A01(2)", command=A1_2)
-b24 = Button(win, text = "A02", command=A2)
-b25 = Button(win, text = "A03", command=A3)
-b26 = Button(win, text = "B01", command=B1)
-b50 = Button(win, text = "Save JE_Test File", command=B1)  # attach command
+b22 = Button(frame_test, text = "A01(1)", command=A1_1)
+b23 = Button(frame_test, text = "A01(2)", command=A1_2)
+b24 = Button(frame_test, text = "A02", command=A2)
+b25 = Button(frame_test, text = "A03", command=A3)
+b26 = Button(frame_test, text = "B01", command=B1)
+b50 = Button(frame_test, text = "Save JE_Test File", command=B1)  # attach command
 
 b22.grid(row=22,column =0, sticky = N+E+W+S)
 b23.grid(row=23,column =0, sticky = N+E+W+S)
 b24.grid(row=24,column =0, sticky = N+E+W+S)
 b25.grid(row=25,column =0, sticky = N+E+W+S)
-b26.grid(row=26,column =0, sticky = N+E+W+S)
-b50.grid(row=50,column =0, sticky = N+E+W+S, columnspan =2)
 
-
-
-
-
-lbl2 = Label(win, text ="Out of FY Row EA : ? ")
+lbl2 = Label(frame_test, text ="Out of FY Row EA : ? ")
 lbl2.grid(row=22, column=1, sticky = W)
 
-lbl3 = Label(win, text ="NA EA : ? ")
+lbl3 = Label(frame_test, text ="NA EA : ? ")
 lbl3.grid(row=23, column=1, sticky = W)
 
-lbl4 = Label(win, text ="Amount Diff. EA : ? ")
+lbl4 = Label(frame_test, text ="Amount Diff. EA : ? ")
 lbl4.grid(row=24, column=1, sticky = W)
 
-lbl5 = Label(win, text ="Je TB Diff. EA : ? ")
+lbl5 = Label(frame_test, text ="Je TB Diff. EA : ? ")
 lbl5.grid(row=25, column=1, sticky = W)
 
-lbl6 = Label(win, text ="Corr. ACCT Code EA : ? ")
-lbl6.grid(row=26, column=1, sticky = W)
+b26.grid(row=22,column =3, sticky = N+E+W+S)
+lbl6 = Label(frame_test, text ="Corr. ACCT Code EA : ? ")
+lbl6.grid(row=22, column=4, sticky = W)
 
+b50.grid(row=50,column =0, sticky = N+E+W+S, columnspan =7)
 
 win.mainloop()
 
