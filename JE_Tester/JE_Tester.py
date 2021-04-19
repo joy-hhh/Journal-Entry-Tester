@@ -1,9 +1,11 @@
 import pandas as pd
+import openpyxl
 import os
 import tkinter.ttk as ttk
 from tkinter import *
 from tkinter import filedialog
-from tkinter import messagebox
+import tkinter.messagebox as msgbox
+from datetime import datetime
 
 win =Tk()
 win.geometry("1200x800")
@@ -25,7 +27,14 @@ def readexcel():
 
 # %% A1 datetime
 
-from datetime import datetime
+
+def Save_File():
+    try:
+        test.to_excel(folder + 'A2test.xlsx')
+        acc2.to_excel(folder + 'A3test.xlsx')
+        accodegb.to_excel(folder + 'B1test.xlsx')
+    except Exception as err:
+        msgbox.showerror("Error", err)
 
 
 def A1_1():
@@ -43,7 +52,7 @@ def A1_1():
 
 def A1_2():
     try:
-        nullcol = str(e5.get())
+        nullcol = str(combobox14.get())
         nulltemp = df[nullcol].isnull()
         nullrow = df.loc[(nulltemp)]
         lbl3.configure(text="NA Line Count : " + str(nullrow.shape[0]))
@@ -53,13 +62,13 @@ def A1_2():
 # %% A2 account differ
 
 def A2():
+    global test
     try:
         cha = df.pivot_table(values=[str(combobox2.get())], index=[str(combobox4.get())], aggfunc='sum', margins=True)
         dae = df.pivot_table(values=[str(combobox3.get())], index=[str(combobox4.get())], aggfunc='sum', margins=True)
         test = pd.concat([cha, dae], axis=1)
         test['difference'] = test[str(combobox2.get())] - test[str(combobox3.get())]
         # difference Row groupby
-        test.to_excel(folder + 'A2test.xlsx')
         A2_test = test.groupby("difference").count()
         lbl4.configure(text="Amount diff. Count : " + str(A2_test.shape[0] - 1))
     except Exception as err:
@@ -69,6 +78,7 @@ def A2():
 # %% B1 corr
 
 def B1():
+    global accodegb
     try:
         accode = str(e6.get())
         df1 = df.astype({str(combobox1.get()): 'str'})
@@ -78,7 +88,6 @@ def B1():
         dfaccode = df1[[str(combobox4.get()), str(combobox1.get())]]
         jenomerge = pd.merge(jenoaccode, dfaccode, left_on=str(combobox4.get()), right_on=str(combobox4.get()), how='left')
         accodegb = jenomerge.groupby(str(combobox1.get())).count()
-        accodegb.to_excel(folder + 'B1test.xlsx')
         lbl6.configure(text="Corr. Acc. Count : " + str(accodegb.shape[0] - 1))
     except Exception as err:
         msgbox.showerror("Error", err)
@@ -158,19 +167,19 @@ def CYTB_upload():
     CYTB = pd.read_excel(CYTB_file)
 
     ACCT_CYTB = list(CYTB.columns)
-    combobox7 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_CYTB)
-    combobox7.grid(row=2, column=3)
-    combobox7.set("Select ACCT Code")
+    combobox23 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_CYTB)
+    combobox23.grid(row=2, column=3)
+    combobox23.set("Select ACCT Code")
 
     ACCT_DRSUM = list(CYTB.columns)
-    combobox8 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_DRSUM)
-    combobox8.grid(row=3, column=3)
-    combobox8.set("Select DR Sum")
+    combobox33 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_DRSUM)
+    combobox33.grid(row=3, column=3)
+    combobox33.set("Select DR Sum")
 
     ACCT_CRSUM = list(CYTB.columns)
-    combobox9 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_CRSUM)
-    combobox9.grid(row=4, column=3)
-    combobox9.set("Select CR Sum")
+    combobox43 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_CRSUM)
+    combobox43.grid(row=4, column=3)
+    combobox43.set("Select CR Sum")
 
 
 def PYTB_upload():
@@ -200,11 +209,12 @@ def PYTB_upload():
 # %% A3
 
 def A3():
+    global acc2
     try:
-        acccha = df.pivot_table(values=["DR"], index=["ACCTCD"], aggfunc='sum', margins=True)
-        accdae = df.pivot_table(values=["CR"], index=["ACCTCD"], aggfunc='sum', margins=True)
+        acccha = df.pivot_table(values=[str(combobox2.get())], index=[str(combobox1.get())], aggfunc='sum', margins=True)
+        accdae = df.pivot_table(values=[str(combobox3.get())], index=[str(combobox1.get())], aggfunc='sum', margins=True)
         acc = pd.concat([acccha, accdae], axis=1)
-        acc['inc'] = acc["DR"] - acc["CR"]
+        acc['inc'] = acc[str(combobox2.get())] - acc[str(combobox3.get())]
 
         n = e_BSPL.get()
         TB1 = CYTB.iloc[:(n-1), ]
@@ -215,28 +225,27 @@ def A3():
         TB2['CYinc'] = TB2['DRSUM'] - TB2['CRSUM']
         TB3['inc'] = TB3['DRSUM'] - TB3['CRSUM']
 
-        CYFPTBnull = (TB1['ACCTCD'].isnull())
+        CYFPTBnull = (TB1[str(combobox23.get())].isnull())
         CYFPTB_adj = TB1.loc[(~CYFPTBnull)]
 
-        CYPLTBnull = (TB2['ACCTCD'].isnull())
+        CYPLTBnull = (TB2[str(combobox23.get())].isnull())
         CYPLTB_adj = TB2.loc[(~CYPLTBnull)]
 
-        TBFP = pd.merge(CYFPTB_adj, TB3, left_on='ACCTCD', right_on='ACCTCD', how='left')
+        TBFP = pd.merge(CYFPTB_adj, TB3, left_on=str(combobox23.get()), right_on=str(combobox24.get()), how='left')
         TBFP['CYinc'] = TBFP['inc_x'] - TBFP['inc_y']
 
-        TBFPinc = TBFP[['ACCTCD', 'CYinc']]
-        TBPLinc = CYPLTB_adj[['ACCTCD', 'CYinc']]
+        TBFPinc = TBFP[[str(combobox23.get()), 'CYinc']]
+        TBPLinc = CYPLTB_adj[[str(combobox24.get()), 'CYinc']]
 
         TBinc = pd.concat([TBFPinc, TBPLinc], ignore_index=True)
 
-        acc2 = pd.merge(TBinc, acc, left_on='ACCTCD', right_on='ACCTCD', how='left')
+        acc2 = pd.merge(TBinc, acc, left_on=str(combobox23.get()), right_on=str(combobox1.get()), how='left')
         acc2['A3'] = acc2['CYinc'] - acc2['inc']
 
-        acc2.to_excel(folder + 'A3test.xlsx')
 
         A3_test = acc2.groupby("A3").count()
-        lbl5.configure(text="JE TB diff. EA : " + str(A3_test.shape[0] - 1))
-    except Exception as err:  # 예외 처리
+        lbl5.configure(text="JE - TB diff. Count : " + str(A3_test.shape[0] - 1))
+    except Exception as err:
         msgbox.showerror("Error", err)
 
 
@@ -302,7 +311,7 @@ b23 = Button(frame_test, text = "A01(2)", command=A1_2)
 b24 = Button(frame_test, text = "A02", command=A2)
 b25 = Button(frame_test, text = "A03", command=A3)
 b26 = Button(frame_test, text = "B01", command=B1)
-b50 = Button(frame_test, text = "Save JE_Test File", command=B1)  # attach command
+b50 = Button(frame_test, text = "Save JE_Test File", command=Save_File)
 
 b22.grid(row=22,column =0, sticky = N+E+W+S)
 b23.grid(row=23,column =0, sticky = N+E+W+S)
