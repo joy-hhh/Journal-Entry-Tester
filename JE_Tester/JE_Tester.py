@@ -6,7 +6,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 win =Tk()
-win.geometry("1100x550")
+win.geometry("1200x800")
 win.title("JE Tester by Joy 0.1.0, Copyright 2021. Joy. All rights reserved ")
 win.option_add("*Font","NanumGothic 16")
 
@@ -20,7 +20,7 @@ df = pd.read_excel(filename)
 def readexcel():
     try:
         lbl0.configure(text="JE file (Row, Col) : " + str(df.shape))
-    except Exception as err: # 예외 처리
+    except Exception as err:
         msgbox.showerror("Error", err)
 
 # %% A1 datetime
@@ -30,15 +30,15 @@ from datetime import datetime
 
 def A1_1():
     try:
-        start = str(e2.get())
-        end = str(e3.get())
-        date_format = str(e4.get())
-        df['date'] = pd.to_datetime(df['JEDATE'], format=date_format)
+        start = str(e3.get())
+        end = str(e4.get())
+        date_format = Date_Format[str(combobox11.get())]
+        df['date'] = pd.to_datetime(df[str(combobox5.get())], format=date_format)
         before = df['date'] < pd.to_datetime(start)
         after = df['date'] > pd.to_datetime(end)
         out = df[before | after]
-        lbl2.configure(text="out of FY line EA : " + str(out.shape[0]))
-    except Exception as err: # 예외 처리
+        lbl2.configure(text="out of FY line Count : " + str(out.shape[0]))
+    except Exception as err:
         msgbox.showerror("Error", err)
 
 def A1_2():
@@ -46,23 +46,23 @@ def A1_2():
         nullcol = str(e5.get())
         nulltemp = df[nullcol].isnull()
         nullrow = df.loc[(nulltemp)]
-        lbl3.configure(text="NA number : " + str(nullrow.shape[0]))
-    except Exception as err: # 예외 처리
+        lbl3.configure(text="NA Line Count : " + str(nullrow.shape[0]))
+    except Exception as err:
         msgbox.showerror("Error", err)
 
 # %% A2 account differ
 
 def A2():
     try:
-        cha = df.pivot_table(values=["DR"], index=["JENO"], aggfunc='sum', margins=True)
-        dae = df.pivot_table(values=["CR"], index=["JENO"], aggfunc='sum', margins=True)
+        cha = df.pivot_table(values=[str(combobox2.get())], index=[str(combobox4.get())], aggfunc='sum', margins=True)
+        dae = df.pivot_table(values=[str(combobox3.get())], index=[str(combobox4.get())], aggfunc='sum', margins=True)
         test = pd.concat([cha, dae], axis=1)
-        test['difference'] = test["DR"] - test["CR"]
+        test['difference'] = test[str(combobox2.get())] - test[str(combobox3.get())]
         # difference Row groupby
         test.to_excel(folder + 'A2test.xlsx')
         A2_test = test.groupby("difference").count()
-        lbl4.configure(text="Amount diff. EA : " + str(A2_test.shape[0] - 1))
-    except Exception as err: # 예외 처리
+        lbl4.configure(text="Amount diff. Count : " + str(A2_test.shape[0] - 1))
+    except Exception as err:
         msgbox.showerror("Error", err)
 
 
@@ -71,16 +71,16 @@ def A2():
 def B1():
     try:
         accode = str(e6.get())
-        df1 = df.astype({'ACCTCD': 'str'})
-        dfaccode = (df1['ACCTCD'] == accode)
+        df1 = df.astype({str(combobox1.get()): 'str'})
+        dfaccode = (df1[str(combobox1.get())] == accode)
         jeaccode = df1[dfaccode]
-        jenoaccode = jeaccode['JENO']
-        dfaccode = df1[['JENO', 'ACCTCD']]
-        jenomerge = pd.merge(jenoaccode, dfaccode, left_on='JENO', right_on='JENO', how='left')
-        accodegb = jenomerge.groupby("ACCTCD").count()
+        jenoaccode = jeaccode[str(combobox4.get())]
+        dfaccode = df1[[str(combobox4.get()), str(combobox1.get())]]
+        jenomerge = pd.merge(jenoaccode, dfaccode, left_on=str(combobox4.get()), right_on=str(combobox4.get()), how='left')
+        accodegb = jenomerge.groupby(str(combobox1.get())).count()
         accodegb.to_excel(folder + 'B1test.xlsx')
-        lbl6.configure(text="Corr Acc EA : " + str(accodegb.shape[0] - 1))
-    except Exception as err: # 예외 처리
+        lbl6.configure(text="Corr. Acc. Count : " + str(accodegb.shape[0] - 1))
+    except Exception as err:
         msgbox.showerror("Error", err)
 
 # Title
@@ -165,12 +165,12 @@ def CYTB_upload():
     ACCT_DRSUM = list(CYTB.columns)
     combobox8 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_DRSUM)
     combobox8.grid(row=3, column=3)
-    combobox8.set("Select DR")
+    combobox8.set("Select DR Sum")
 
     ACCT_CRSUM = list(CYTB.columns)
     combobox9 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_CRSUM)
     combobox9.grid(row=4, column=3)
-    combobox9.set("Select CR")
+    combobox9.set("Select CR Sum")
 
 
 def PYTB_upload():
@@ -182,19 +182,19 @@ def PYTB_upload():
     PYTB = pd.read_excel(PYTB_file)
 
     ACCT_PYTB = list(PYTB.columns)
-    combobox11 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_PYTB)
-    combobox11.grid(row=2, column=4)
-    combobox11.set("Select ACCT Code")
+    combobox24 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_PYTB)
+    combobox24.grid(row=2, column=4)
+    combobox24.set("Select ACCT Code")
 
     ACCT_DRSUM_PY = list(PYTB.columns)
-    combobox12 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_DRSUM_PY)
-    combobox12.grid(row=3, column=4)
-    combobox12.set("Select DR")
+    combobox34 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_DRSUM_PY)
+    combobox34.grid(row=3, column=4)
+    combobox34.set("Select DR")
 
     ACCT_CRSUM_PY = list(PYTB.columns)
-    combobox13 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_CRSUM_PY)
-    combobox13.grid(row=4, column=4)
-    combobox13.set("Select CR")
+    combobox44 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_CRSUM_PY)
+    combobox44.grid(row=4, column=4)
+    combobox44.set("Select CR")
 
 
 # %% A3
