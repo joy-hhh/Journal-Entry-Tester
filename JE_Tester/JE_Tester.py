@@ -1,5 +1,5 @@
 import pandas as pd
-import openpyxl
+import xlsxwriter
 import os
 import tkinter.ttk as ttk
 from tkinter import *
@@ -16,7 +16,7 @@ win.option_add("*Font","NanumGothic 16")
 filename = filedialog.askopenfilename(initialdir="/", title="Select file",
                                       filetypes=(("XLSX files", "*.xlsx"),
                                                  ("All files", "*.*")))
-folder = os.path.abspath(filename)
+folder = os.path.dirname(filename)
 df = pd.read_excel(filename)
 
 def readexcel():
@@ -30,14 +30,83 @@ def readexcel():
 
 def Save_File():
     try:
-        test.to_excel(folder + 'A2test.xlsx')
-        acc2.to_excel(folder + 'A3test.xlsx')
-        accodegb.to_excel(folder + 'B1test.xlsx')
+        JE_Test = [' ',
+                   'Journal Entry test',
+                   ' ',
+                   ' ',
+                   '회사명',
+                   '작성일자',
+                   '작성자',
+                   '검토자',
+                   ' ',
+                   ' ',
+                   ' ',
+                   'Step 1.    테스트 개요 및 목적 ',
+                   ' ',
+                   '재무제표에 대한 회계감사의 일환으로 감사대상기간 동안 발생한 모든 전표 데이터에 대한 무결성 및 비경상적인 거래가 존재하는지를 검증',
+                   ' ',
+                   '(1) 계정명(FSLI)    전체 계정',
+                   '(2) 기준일 (Coverage date) 	' + str(e4.get()),
+                   '(3) 테스트되는 경영자의 주장 (Assertion) : 완전성 (C),정확성 (A),기간귀속구분 (CO),실재성 (E/O),권리 (R),공시(PD),평가(V)',
+                   ' ',
+                   'Step 2.    Test 대상 모집단',
+                   ' ',
+                   '(1) 모집단 총 행의 수와 열의 수 : (행 , 열) = ' + str(df.shape),
+                   '(2) 모집단의 완전성 확인	Step 5. Test 결과의 A1, A2, A3 참조',
+                   ' ',
+                   'Step 3.    오류의 정의',
+                   ' ',
+                   '재무보고 프로세스 관련, 부적절하거나 비경상적인 분개 및 수정사항',
+                   ' ',
+                   'Step 4.    Test 방법',
+                   ' ',
+                   'A01 : Data Integrity 검증 - 데이터 유효성을 검증하고, record에 대한 이해를 위한 절차',
+                   '전표 데이터의 회계기간이 당해년도에 포함되는지 여부 검토',
+                   '전표 주요 필드값의 누락 여부 검토를 통한 data integrity 검토',
+                   ' ',
+                   'A02. 전표번호 별 차대변 일치검증',
+                   '전표번호 별 차변금액과 대변금액이 일치하는지 확인하여 전표 데이터의 완전성을 검토',
+                   '차변금액과 대변금액이 일치하지 않을 경우 해당 전표를 추출하여 회사 측과 확인',
+                   ' ',
+                   'A03. 시산표 Reconciliation 검증(Trial Balance Rollforward Test)',
+                   '기초 F/S잔액에 수령한 모든 전표의 계정과목 별 합계금액을 반영하여 도출한 기말 F/S 잔액과 회사 제시 F/S와의 일치 여부 검토',
+                   ' ',
+                   'B01. 매출의 상대계정분석(매출과 연관성이 낮은 계정이 포함된 비정상적인 거래)',
+                   '매출에 대한 상대계정분석 결과 비정상적으로 처리된 회계처리가 있는지 검토하고 해당 전표 중 특정 금액 이상인 건을 추출하여 검토',
+                   ' ',
+                   'Step 5.    Test 결과',
+                   ' ',
+                   'A01 (1) : 회계기간에 속하지 않는 날짜열의 갯수를 ' + str(out.shape[0]) + '개로 확인 하였음 ',
+                   'A01 (2) : ' + str(combobox14.get())+' 열의 결측값 갯수가 ' + str(nullrow.shape[0]) + '개로 확인 하였음',
+                   'A02     : 전표번호별 차변 금액의 합계와 대변 금액의 합계가 차이 나는 열이 ' + str(A2_test.shape[0] - 1) + '개로 확인 하였음 - A2test Sheet 참조 ',
+                   'A03     : 전표에서의 각 계정코드별 금액 합계가 시산표 계정코드별 금액과 차이나는 항목이' + str(A3_test.shape[0] - 1) + '개로 확인 하였음 -  A3test Sheet 참조 ',
+                   'B01     : ' + str(e6.get())+ ' 계정코드에 대하여 전표에 전기된 모든 상대계정코드의 갯수가 ' + str(accodegb.shape[0] - 1) + '개로 확인 하였음 - B1test Sheet 참조']
+
+        excel_file = folder + 'Journal_Entry_Test.xlsx'
+
+        workbook = xlsxwriter.Workbook(excel_file)
+        worksheet = workbook.add_worksheet('JE_Test_Summary')
+        for row_num, value in enumerate(JE_Test):
+            worksheet.write(row_num, 1, value)
+        cell_format1 = workbook.add_format()
+        cell_format1.set_bottom(5)
+        for i in range(2, 6):
+            worksheet.write(f'C{i}', " ", cell_format1)
+        worksheet.set_column(1, 2, 25)
+        workbook.close()
+
+        excel_writer = pd.ExcelWriter(folder + 'Journal_Entry_Details.xlsx', engine='xlsxwriter')
+        test.to_excel(excel_writer, sheet_name='A2test')
+        acc2.to_excel(excel_writer, sheet_name='A3test')
+        accodegb.to_excel(excel_writer, sheet_name='B1test')
+        excel_writer.save()
+
     except Exception as err:
         msgbox.showerror("Error", err)
 
 
 def A1_1():
+    global out
     try:
         start = str(e3.get())
         end = str(e4.get())
@@ -46,11 +115,12 @@ def A1_1():
         before = df['date'] < pd.to_datetime(start)
         after = df['date'] > pd.to_datetime(end)
         out = df[before | after]
-        lbl2.configure(text="out of FY line Count : " + str(out.shape[0]))
+        lbl2.configure(text="Out of FY line Count : " + str(out.shape[0]))
     except Exception as err:
         msgbox.showerror("Error", err)
 
 def A1_2():
+    global nullrow
     try:
         nullcol = str(combobox14.get())
         nulltemp = df[nullcol].isnull()
@@ -63,6 +133,7 @@ def A1_2():
 
 def A2():
     global test
+    global A2_test
     try:
         cha = df.pivot_table(values=[str(combobox2.get())], index=[str(combobox4.get())], aggfunc='sum', margins=True)
         dae = df.pivot_table(values=[str(combobox3.get())], index=[str(combobox4.get())], aggfunc='sum', margins=True)
@@ -88,7 +159,7 @@ def B1():
         dfaccode = df1[[str(combobox4.get()), str(combobox1.get())]]
         jenomerge = pd.merge(jenoaccode, dfaccode, left_on=str(combobox4.get()), right_on=str(combobox4.get()), how='left')
         accodegb = jenomerge.groupby(str(combobox1.get())).count()
-        lbl6.configure(text="Corr. Acc. Count : " + str(accodegb.shape[0] - 1))
+        lbl6.configure(text="Corr. ACCT Code Count : " + str(accodegb.shape[0] - 1))
     except Exception as err:
         msgbox.showerror("Error", err)
 
@@ -161,6 +232,9 @@ combobox5.set("Select JE Date")
 def CYTB_upload():
     global CYTB_file
     global CYTB
+    global combobox23
+    global combobox33
+    global combobox43
     CYTB_file = filedialog.askopenfilename(initialdir="/", title="Select file",
                                            filetypes=(("XLSX files", "*.xlsx"),
                                                       ("All files", "*.*")))
@@ -185,6 +259,9 @@ def CYTB_upload():
 def PYTB_upload():
     global PYTB_file
     global PYTB
+    global combobox24
+    global combobox34
+    global combobox44
     PYTB_file = filedialog.askopenfilename(initialdir="/", title="Select file",
                                            filetypes=(("XLSX files", "*.xlsx"),
                                                       ("All files", "*.*")))
@@ -198,32 +275,33 @@ def PYTB_upload():
     ACCT_DRSUM_PY = list(PYTB.columns)
     combobox34 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_DRSUM_PY)
     combobox34.grid(row=3, column=4)
-    combobox34.set("Select DR")
+    combobox34.set("Select DR Sum")
 
     ACCT_CRSUM_PY = list(PYTB.columns)
     combobox44 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_CRSUM_PY)
     combobox44.grid(row=4, column=4)
-    combobox44.set("Select CR")
+    combobox44.set("Select CR Sum")
 
 
 # %% A3
 
 def A3():
     global acc2
+    global A3_test
     try:
         acccha = df.pivot_table(values=[str(combobox2.get())], index=[str(combobox1.get())], aggfunc='sum', margins=True)
         accdae = df.pivot_table(values=[str(combobox3.get())], index=[str(combobox1.get())], aggfunc='sum', margins=True)
         acc = pd.concat([acccha, accdae], axis=1)
         acc['inc'] = acc[str(combobox2.get())] - acc[str(combobox3.get())]
 
-        n = e_BSPL.get()
+        n = int(e_BSPL.get())
         TB1 = CYTB.iloc[:(n-1), ]
         TB2 = CYTB.iloc[(n-1):, ]
         TB3 = PYTB
 
-        TB1['inc'] = TB1['DRSUM'] - TB1['CRSUM']
-        TB2['CYinc'] = TB2['DRSUM'] - TB2['CRSUM']
-        TB3['inc'] = TB3['DRSUM'] - TB3['CRSUM']
+        TB1['inc'] = TB1[str(combobox33.get())] - TB1[str(combobox43.get())]
+        TB2['CYinc'] = TB2[str(combobox33.get())] - TB2[str(combobox43.get())]
+        TB3['inc'] = TB3[str(combobox34.get())] - TB3[str(combobox44.get())]
 
         CYFPTBnull = (TB1[str(combobox23.get())].isnull())
         CYFPTB_adj = TB1.loc[(~CYFPTBnull)]
@@ -289,11 +367,11 @@ combobox11.set("Select Date Format")
 
 e3=Entry(frame_file)
 e3.grid(row=12, column =1)
-e3.insert(0, "2017-01-01")
+e3.insert(0, "2021-01-01")
 
 e4=Entry(frame_file)
 e4.grid(row=13, column =1)
-e4.insert(0, "2017-12-31")
+e4.insert(0, "2021-12-31")
 
 # for A01(2) Test
 NA_lines = list(df.columns)
@@ -318,20 +396,20 @@ b23.grid(row=23,column =0, sticky = N+E+W+S)
 b24.grid(row=24,column =0, sticky = N+E+W+S)
 b25.grid(row=25,column =0, sticky = N+E+W+S)
 
-lbl2 = Label(frame_test, text ="Out of FY Row EA : ? ")
+lbl2 = Label(frame_test, text ="Out of FY Row Count : ? ")
 lbl2.grid(row=22, column=1, sticky = W)
 
-lbl3 = Label(frame_test, text ="NA EA : ? ")
+lbl3 = Label(frame_test, text ="NA Count : ? ")
 lbl3.grid(row=23, column=1, sticky = W)
 
-lbl4 = Label(frame_test, text ="Amount Diff. EA : ? ")
+lbl4 = Label(frame_test, text ="Amount Diff. Count : ? ")
 lbl4.grid(row=24, column=1, sticky = W)
 
-lbl5 = Label(frame_test, text ="Je TB Diff. EA : ? ")
+lbl5 = Label(frame_test, text ="Je - TB Diff. Count : ? ")
 lbl5.grid(row=25, column=1, sticky = W)
 
 b26.grid(row=22,column =3, sticky = N+E+W+S)
-lbl6 = Label(frame_test, text ="Corr. ACCT Code EA : ? ")
+lbl6 = Label(frame_test, text ="Corr. ACCT Code Count : ? ")
 lbl6.grid(row=22, column=4, sticky = W)
 
 b50.grid(row=50,column =0, sticky = N+E+W+S, columnspan =7)
