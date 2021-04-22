@@ -16,7 +16,6 @@ win.option_add("*Font","NanumGothic 16")
 filename = filedialog.askopenfilename(initialdir="/", title="Select file",
                                       filetypes=(("XLSX files", "*.xlsx"),
                                                  ("All files", "*.*")))
-folder = os.path.dirname(filename)
 df = pd.read_excel(filename)
 
 def readexcel():
@@ -24,8 +23,6 @@ def readexcel():
         lbl0.configure(text="JE file (Row, Col) : " + str(df.shape))
     except Exception as err:
         msgbox.showerror("Error", err)
-
-# %% A1 datetime
 
 
 def Save_File():
@@ -45,14 +42,14 @@ def Save_File():
                    ' ',
                    '재무제표에 대한 회계감사의 일환으로 감사대상기간 동안 발생한 모든 전표 데이터에 대한 무결성 및 비경상적인 거래가 존재하는지를 검증',
                    ' ',
-                   '(1) 계정명(FSLI)    전체 계정',
-                   '(2) 기준일 (Coverage date) 	' + str(e4.get()),
-                   '(3) 테스트되는 경영자의 주장 (Assertion) : 완전성 (C),정확성 (A),기간귀속구분 (CO),실재성 (E/O),권리 (R),공시(PD),평가(V)',
+                   '(1) 계정명(FSLI)  :    전체 계정',
+                   '(2) 기준일 (Coverage date)  : 	' + str(e4.get()),
+                   '(3) 테스트되는 경영자의 주장 (Assertion)  :  완전성 (C),정확성 (A),기간귀속구분 (CO),실재성 (E/O),권리 (R),공시(PD),평가(V)',
                    ' ',
                    'Step 2.    Test 대상 모집단',
                    ' ',
-                   '(1) 모집단 총 행의 수와 열의 수 : (행 , 열) = ' + str(df.shape),
-                   '(2) 모집단의 완전성 확인	Step 5. Test 결과의 A1, A2, A3 참조',
+                   '(1) 모집단 총 행의 수와 열의 수  :  (행 , 열) = ' + str(df.shape),
+                   '(2) 모집단의 완전성 확인  :  Step 5. Test 결과의 A1, A2, A3 참조',
                    ' ',
                    'Step 3.    오류의 정의',
                    ' ',
@@ -60,7 +57,7 @@ def Save_File():
                    ' ',
                    'Step 4.    Test 방법',
                    ' ',
-                   'A01 : Data Integrity 검증 - 데이터 유효성을 검증하고, record에 대한 이해를 위한 절차',
+                   'A01 . Data Integrity 검증 - 데이터 유효성을 검증하고, record에 대한 이해를 위한 절차',
                    '전표 데이터의 회계기간이 당해년도에 포함되는지 여부 검토',
                    '전표 주요 필드값의 누락 여부 검토를 통한 data integrity 검토',
                    ' ',
@@ -76,26 +73,30 @@ def Save_File():
                    ' ',
                    'Step 5.    Test 결과',
                    ' ',
-                   'A01 (1) : 회계기간에 속하지 않는 날짜열의 갯수를 ' + str(out.shape[0]) + '개로 확인 하였음 ',
-                   'A01 (2) : ' + str(combobox14.get())+' 열의 결측값 갯수가 ' + str(nullrow.shape[0]) + '개로 확인 하였음',
-                   'A02     : 전표번호별 차변 금액의 합계와 대변 금액의 합계가 차이 나는 열이 ' + str(A2_test.shape[0] - 1) + '개로 확인 하였음 - A2test Sheet 참조 ',
-                   'A03     : 전표에서의 각 계정코드별 금액 합계가 시산표 계정코드별 금액과 차이나는 항목이' + str(A3_test.shape[0] - 1) + '개로 확인 하였음 -  A3test Sheet 참조 ',
-                   'B01     : ' + str(e6.get())+ ' 계정코드에 대하여 전표에 전기된 모든 상대계정코드의 갯수가 ' + str(accodegb.shape[0] - 1) + '개로 확인 하였음 - B1test Sheet 참조']
+                   'A01 (1) :    회계기간에 속하지 않는 날짜열의 갯수를 ' + str(out.shape[0]) + '개로 확인 하였음 ',
+                   'A01 (2) :    ' + str(combobox14.get())+' 열의 결측값 갯수가 ' + str(nullrow.shape[0]) + '개로 확인 하였음',
+                   'A02     :    전표번호별 차변 금액의 합계와 대변 금액의 합계가 차이 나는 열이 ' + str(A2_test.shape[0] - 1) + '개로 확인 하였음 - A2test Sheet 참조 ',
+                   'A03     :    전표에서의 각 계정코드별 금액 합계가 시산표 계정코드별 금액과 차이나는 항목이' + str(A3_test.shape[0] - 1) + '개로 확인 하였음 -  A3test Sheet 참조 ',
+                   'B01     :    ' + str(e6.get())+ ' 계정코드에 대하여 전표에 전기된 모든 상대계정코드의 갯수가 ' + str(accodegb.shape[0] - 1) + '개로 확인 하였음 - B1test Sheet 참조',
+                   ' ',
+                   ' ',
+                   'JE Test에 대한 추가 기술 >> ']
 
-        excel_file = folder + 'Journal_Entry_Test.xlsx'
+        file_path = filedialog.askdirectory()
 
+        excel_file = file_path + '/Journal_Entry_Test.xlsx'
         workbook = xlsxwriter.Workbook(excel_file)
         worksheet = workbook.add_worksheet('JE_Test_Summary')
         for row_num, value in enumerate(JE_Test):
             worksheet.write(row_num, 1, value)
         cell_format1 = workbook.add_format()
         cell_format1.set_bottom(5)
-        for i in range(2, 6):
+        for i in range(5, 9):
             worksheet.write(f'C{i}', " ", cell_format1)
         worksheet.set_column(1, 2, 25)
         workbook.close()
 
-        excel_writer = pd.ExcelWriter(folder + 'Journal_Entry_Details.xlsx', engine='xlsxwriter')
+        excel_writer = pd.ExcelWriter(file_path + '/Journal_Entry_Details.xlsx', engine='xlsxwriter')
         test.to_excel(excel_writer, sheet_name='A2test')
         acc2.to_excel(excel_writer, sheet_name='A3test')
         accodegb.to_excel(excel_writer, sheet_name='B1test')
@@ -399,7 +400,7 @@ b25.grid(row=25,column =0, sticky = N+E+W+S)
 lbl2 = Label(frame_test, text ="Out of FY Row Count : ? ")
 lbl2.grid(row=22, column=1, sticky = W)
 
-lbl3 = Label(frame_test, text ="NA Count : ? ")
+lbl3 = Label(frame_test, text ="NA Line Count : ? ")
 lbl3.grid(row=23, column=1, sticky = W)
 
 lbl4 = Label(frame_test, text ="Amount Diff. Count : ? ")
