@@ -43,8 +43,8 @@ def Save_File():
                    '재무제표에 대한 회계감사의 일환으로 감사대상기간 동안 발생한 모든 전표 데이터에 대한 무결성 및 비경상적인 거래가 존재하는지를 검증',
                    ' ',
                    '(1) 계정명(FSLI)  :    전체 계정',
-                   '(2) 기준일 (Coverage date)  : 	' + str(e4.get()),
-                   '(3) 테스트되는 경영자의 주장 (Assertion)  :  완전성 (C),정확성 (A),기간귀속구분 (CO),실재성 (E/O),권리 (R),공시(PD),평가(V)',
+                   '(2) 기준일 (Coverage date)  :    ' + str(e4.get()),
+                   '(3) 테스트되는 경영자의 주장 (Assertion)  :    완전성 (C),정확성 (A),기간귀속구분 (CO),실재성 (E/O),권리 (R),공시(PD),평가(V)',
                    ' ',
                    'Step 2.    Test 대상 모집단',
                    ' ',
@@ -101,6 +101,8 @@ def Save_File():
         acc2.to_excel(excel_writer, sheet_name='A3test')
         accodegb.to_excel(excel_writer, sheet_name='B1test')
         excel_writer.save()
+
+        msgbox.showinfo("Save complete", "Journal_Entry_Test.xlsx, Journal_Entry_Details.xlsx")
 
     except Exception as err:
         msgbox.showerror("Error", err)
@@ -300,9 +302,9 @@ def A3():
         TB2 = CYTB.iloc[(n-1):, ]
         TB3 = PYTB
 
-        TB1['inc'] = TB1[str(combobox33.get())] - TB1[str(combobox43.get())]
-        TB2['CYinc'] = TB2[str(combobox33.get())] - TB2[str(combobox43.get())]
-        TB3['inc'] = TB3[str(combobox34.get())] - TB3[str(combobox44.get())]
+        TB1['inc'] = TB1.loc[:,str(combobox33.get())].copy() - TB1.loc[:,str(combobox43.get())].copy()
+        TB2['TB_inc'] = TB2.loc[:,str(combobox33.get())].copy() - TB2.loc[:,str(combobox43.get())].copy()
+        TB3['inc'] = TB3.loc[:,str(combobox34.get())].copy() - TB3.loc[:,str(combobox44.get())].copy()
 
         CYFPTBnull = (TB1[str(combobox23.get())].isnull())
         CYFPTB_adj = TB1.loc[(~CYFPTBnull)]
@@ -311,15 +313,15 @@ def A3():
         CYPLTB_adj = TB2.loc[(~CYPLTBnull)]
 
         TBFP = pd.merge(CYFPTB_adj, TB3, left_on=str(combobox23.get()), right_on=str(combobox24.get()), how='left')
-        TBFP['CYinc'] = TBFP['inc_x'] - TBFP['inc_y']
+        TBFP['TB_inc'] = TBFP['inc_x'] - TBFP['inc_y']
 
-        TBFPinc = TBFP[[str(combobox23.get()), 'CYinc']]
-        TBPLinc = CYPLTB_adj[[str(combobox24.get()), 'CYinc']]
+        TBFPinc = TBFP[[str(combobox23.get()), 'TB_inc']]
+        TBPLinc = CYPLTB_adj[[str(combobox24.get()), 'TB_inc']]
 
         TBinc = pd.concat([TBFPinc, TBPLinc], ignore_index=True)
 
         acc2 = pd.merge(TBinc, acc, left_on=str(combobox23.get()), right_on=str(combobox1.get()), how='left')
-        acc2['A3'] = acc2['CYinc'] - acc2['inc']
+        acc2['A3'] = acc2['TB_inc'] - acc2['inc']
 
 
         A3_test = acc2.groupby("A3").count()
