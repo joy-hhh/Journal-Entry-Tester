@@ -302,9 +302,12 @@ def A3():
         TB2 = CYTB.iloc[(n-1):, ]
         TB3 = PYTB
 
-        TB1['inc'] = TB1.loc[:,str(combobox33.get())].copy() - TB1.loc[:,str(combobox43.get())].copy()
-        TB2['TB_inc'] = TB2.loc[:,str(combobox33.get())].copy() - TB2.loc[:,str(combobox43.get())].copy()
-        TB3['inc'] = TB3.loc[:,str(combobox34.get())].copy() - TB3.loc[:,str(combobox44.get())].copy()
+        TB1 = TB1.copy()
+        TB2 = TB2.copy()
+
+        TB1.loc[:,'inc'] = TB1.loc[:,str(combobox33.get())] - TB1.loc[:,str(combobox43.get())]
+        TB2.loc[:,'TB_inc'] = TB2.loc[:,str(combobox33.get())] - TB2.loc[:,str(combobox43.get())]
+        TB3.loc[:,'inc'] = TB3.loc[:,str(combobox34.get())] - TB3.loc[:,str(combobox44.get())]
 
         CYFPTBnull = (TB1[str(combobox23.get())].isnull())
         CYFPTB_adj = TB1.loc[(~CYFPTBnull)]

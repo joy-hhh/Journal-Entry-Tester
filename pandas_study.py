@@ -1,7 +1,6 @@
 
 import pandas as pd
 
-
 # 여러 개의 DataFrame 데이터를 하나의 엑셀 워크시트에 위치를 지정해 쓰는 예
 
 df1 = pd.DataFrame({'제품ID': ['P1001', 'P1002', 'P1003', 'P1004'],
