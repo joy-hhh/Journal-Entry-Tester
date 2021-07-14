@@ -298,8 +298,8 @@ def A3():
         acc['inc'] = acc[str(combobox2.get())] - acc[str(combobox3.get())]
 
         n = int(e_BSPL.get())
-        TB1 = CYTB.iloc[:(n-1), ]
-        TB2 = CYTB.iloc[(n-1):, ]
+        TB1 = CYTB.iloc[:n, ]
+        TB2 = CYTB.iloc[(n:, ]
         TB3 = PYTB
 
         TB1 = TB1.copy()
@@ -325,7 +325,6 @@ def A3():
 
         acc2 = pd.merge(TBinc, acc, left_on=str(combobox23.get()), right_on=str(combobox1.get()), how='left')
         acc2['A3'] = acc2['TB_inc'] - acc2['inc']
-
 
         A3_test = acc2.groupby("A3").count()
         lbl5.configure(text="JE - TB diff. Count : " + str(A3_test.shape[0] - 1))
