@@ -118,7 +118,7 @@ def A1_1():
         before = df['date'] < pd.to_datetime(start)
         after = df['date'] > pd.to_datetime(end)
         out = df[before | after]
-        lbl2.configure(text="Out of FY line Count : " + str(out.shape[0]))
+        lbl2.configure(text="회계기간 외의 행 갯수 : " + str(out.shape[0]))
     except Exception as err:
         msgbox.showerror("Error", err)
 
@@ -128,7 +128,7 @@ def A1_2():
         nullcol = str(combobox14.get())
         nulltemp = df[nullcol].isnull()
         nullrow = df.loc[(nulltemp)]
-        lbl3.configure(text="NA Line Count : " + str(nullrow.shape[0]))
+        lbl3.configure(text="NA Lines : " + str(nullrow.shape[0]))
     except Exception as err:
         msgbox.showerror("Error", err)
 
@@ -144,7 +144,7 @@ def A2():
         test['difference'] = test[str(combobox2.get())] - test[str(combobox3.get())]
         # difference Row groupby
         A2_test = test.groupby("difference").count()
-        lbl4.configure(text="Amount diff. Count : " + str(A2_test.shape[0] - 1))
+        lbl4.configure(text="금액이 차이나는 행 갯수 : " + str(A2_test.shape[0] - 1))
     except Exception as err:
         msgbox.showerror("Error", err)
 
@@ -162,7 +162,7 @@ def B1():
         dfaccode = df1[[str(combobox4.get()), str(combobox1.get())]]
         jenomerge = pd.merge(jenoaccode, dfaccode, left_on=str(combobox4.get()), right_on=str(combobox4.get()), how='left')
         accodegb = jenomerge.groupby(str(combobox1.get())).count()
-        lbl6.configure(text="Corr. ACCT Code Count : " + str(accodegb.shape[0] - 1))
+        lbl6.configure(text="상대계정 갯수 : " + str(accodegb.shape[0] - 1))
     except Exception as err:
         msgbox.showerror("Error", err)
 
@@ -299,7 +299,7 @@ def A3():
 
         n = int(e_BSPL.get())
         TB1 = CYTB.iloc[:n, ]
-        TB2 = CYTB.iloc[(n:, ]
+        TB2 = CYTB.iloc[n:, ]
         TB3 = PYTB
 
         TB1 = TB1.copy()
@@ -327,7 +327,7 @@ def A3():
         acc2['A3'] = acc2['TB_inc'] - acc2['inc']
 
         A3_test = acc2.groupby("A3").count()
-        lbl5.configure(text="JE - TB diff. Count : " + str(A3_test.shape[0] - 1))
+        lbl5.configure(text="전표와 시산표가 차이나는 행 갯수 : " + str(A3_test.shape[0] - 1))
     except Exception as err:
         msgbox.showerror("Error", err)
 
@@ -401,20 +401,20 @@ b23.grid(row=23,column =0, sticky = N+E+W+S)
 b24.grid(row=24,column =0, sticky = N+E+W+S)
 b25.grid(row=25,column =0, sticky = N+E+W+S)
 
-lbl2 = Label(frame_test, text ="Out of FY Row Count : ? ")
+lbl2 = Label(frame_test, text ="회계기간 외의 행 갯수 : ? ")
 lbl2.grid(row=22, column=1, sticky = W)
 
-lbl3 = Label(frame_test, text ="NA Line Count : ? ")
+lbl3 = Label(frame_test, text ="NA Lines : ? ")
 lbl3.grid(row=23, column=1, sticky = W)
 
-lbl4 = Label(frame_test, text ="Amount Diff. Count : ? ")
+lbl4 = Label(frame_test, text ="금액이 차이나는 행 갯수 : ? ")
 lbl4.grid(row=24, column=1, sticky = W)
 
-lbl5 = Label(frame_test, text ="Je - TB Diff. Count : ? ")
+lbl5 = Label(frame_test, text ="전표와 시산표가 차이나는 행 갯수 : ? ")
 lbl5.grid(row=25, column=1, sticky = W)
 
 b26.grid(row=22,column =3, sticky = N+E+W+S)
-lbl6 = Label(frame_test, text ="Corr. ACCT Code Count : ? ")
+lbl6 = Label(frame_test, text ="상대계정 갯수 : ? ")
 lbl6.grid(row=22, column=4, sticky = W)
 
 b50.grid(row=50,column =0, sticky = N+E+W+S, columnspan =7)
