@@ -9,7 +9,7 @@ from datetime import datetime
 
 win =Tk()
 win.geometry("1200x800")
-win.title("JE Tester by Joy 0.1.0, Copyright 2021. Joy. All rights reserved ")
+win.title("JE Tester by Joy 0.1.1, Copyright 2021. Joy. All rights reserved ")
 win.option_add("*Font","NanumGothic 16")
 
 
