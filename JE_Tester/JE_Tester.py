@@ -16,7 +16,7 @@ win.option_add("*Font","NanumGothic 16")
 filename = filedialog.askopenfilename(initialdir="/", title="Select file",
                                       filetypes=(("XLSX files", "*.xlsx"),
                                                  ("All files", "*.*")))
-df = pd.read_excel(filename)
+df = pd.read_excel(filename, dtype=str)
 
 def readexcel():
     try:
@@ -138,6 +138,8 @@ def A2():
     global test
     global A2_test
     try:
+        df[str(combobox2.get())] = pd.to_numeric(df[str(combobox2.get())])
+        df[str(combobox3.get())] = pd.to_numeric(df[str(combobox3.get())])
         cha = df.pivot_table(values=[str(combobox2.get())], index=[str(combobox4.get())], aggfunc='sum', margins=True)
         dae = df.pivot_table(values=[str(combobox3.get())], index=[str(combobox4.get())], aggfunc='sum', margins=True)
         test = pd.concat([cha, dae], axis=1)
@@ -241,7 +243,7 @@ def CYTB_upload():
     CYTB_file = filedialog.askopenfilename(initialdir="/", title="Select file",
                                            filetypes=(("XLSX files", "*.xlsx"),
                                                       ("All files", "*.*")))
-    CYTB = pd.read_excel(CYTB_file)
+    CYTB = pd.read_excel(CYTB_file, dtype=str)
 
     ACCT_CYTB = list(CYTB.columns)
     combobox23 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_CYTB)
@@ -259,6 +261,8 @@ def CYTB_upload():
     combobox43.set("Select CR Sum")
 
 
+
+
 def PYTB_upload():
     global PYTB_file
     global PYTB
@@ -268,7 +272,7 @@ def PYTB_upload():
     PYTB_file = filedialog.askopenfilename(initialdir="/", title="Select file",
                                            filetypes=(("XLSX files", "*.xlsx"),
                                                       ("All files", "*.*")))
-    PYTB = pd.read_excel(PYTB_file)
+    PYTB = pd.read_excel(PYTB_file, dtype=str)
 
     ACCT_PYTB = list(PYTB.columns)
     combobox24 = ttk.Combobox(frame_file, height=5, state="readonly", values=ACCT_PYTB)
@@ -292,10 +296,18 @@ def A3():
     global acc2
     global A3_test
     try:
+        df[str(combobox2.get())] = pd.to_numeric(df[str(combobox2.get())])
+        df[str(combobox3.get())] = pd.to_numeric(df[str(combobox3.get())])
         acccha = df.pivot_table(values=[str(combobox2.get())], index=[str(combobox1.get())], aggfunc='sum', margins=True)
         accdae = df.pivot_table(values=[str(combobox3.get())], index=[str(combobox1.get())], aggfunc='sum', margins=True)
         acc = pd.concat([acccha, accdae], axis=1)
         acc['inc'] = acc[str(combobox2.get())] - acc[str(combobox3.get())]
+
+        CYTB[str(combobox33.get())] = pd.to_numeric(CYTB[str(combobox33.get())])
+        CYTB[str(combobox43.get())] = pd.to_numeric(CYTB[str(combobox43.get())])
+
+        PYTB[str(combobox34.get())] = pd.to_numeric(PYTB[str(combobox34.get())])
+        PYTB[str(combobox44.get())] = pd.to_numeric(PYTB[str(combobox44.get())])
 
         n = int(e_BSPL.get())
         TB1 = CYTB.iloc[:n, ]
